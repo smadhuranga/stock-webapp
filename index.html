@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --secondary-hover: #059669;
+            --background: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        input[type="file"] {
+            border: none;
+            padding: 0;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-hover);
+        }
+
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            margin: 0;
+            min-height: 100px;
+            max-height: 300px;
+            border: 1px solid #333;
+        }
+        
+        .result-heading {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Stock Management System</h1>
+        <p>A unified portal connecting the Gateway to our Microservices</p>
+    </div>
+
+    <div class="grid-container">
+        
+        <!-- Stock Items Section -->
+        <div class="card">
+            <h2>📦 Stock Items</h2>
+            
+            <div class="form-group">
+                <button class="btn btn-secondary" onclick="loadStockItems()">Reload All Stock Items</button>
+            </div>
+
+            <hr style="width:100%; border:0; border-top:1px solid var(--border); margin:0.5rem 0;">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="stockName" placeholder="e.g. Graphic Card RTX 4090">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="stockDesc" placeholder="e.g. High-end gaming GPU">
+            </div>
+            <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" id="stockQty" placeholder="e.g. 15">
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" step="0.01" id="stockPrice" placeholder="e.g. 1599.99">
+            </div>
+            <button class="btn" onclick="addStockItem()">Add Stock Item</button>
+
+            <div>
+                <div class="result-heading">Response:</div>
+                <pre id="stockResult">Waiting for data...</pre>
+            </div>
+        </div>
+
+        <!-- Suppliers Section -->
+        <div class="card">
+            <h2>🤝 Suppliers</h2>
+            
+            <div class="form-group">
+                <button class="btn btn-secondary" onclick="loadSuppliers()">Reload All Suppliers</button>
+            </div>
+
+            <hr style="width:100%; border:0; border-top:1px solid var(--border); margin:0.5rem 0;">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="supName" placeholder="e.g. Techtronics Inc.">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="supEmail" placeholder="e.g. sales@techtronics.com">
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="supPhone" placeholder="e.g. +1-800-555-0199">
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" id="supAddress" placeholder="e.g. 123 Tech Blvd, Silicon Valley">
+            </div>
+            <button class="btn" onclick="addSupplier()">Add Supplier</button>
+
+            <div>
+                <div class="result-heading">Response:</div>
+                <pre id="supplierResult">Waiting for data...</pre>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="card">
+            <h2>☁️ File Upload (GCS)</h2>
+            
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin:0;">
+                Securely upload assets or documents to Google Cloud Storage.
+            </p>
+
+            <div class="form-group">
+                <label>Select File</label>
+                <input type="file" id="fileInput">
+            </div>
+            <button class="btn" onclick="uploadFile()">Upload File</button>
+
+            <hr style="width:100%; border:0; border-top:1px solid var(--border); margin:0.5rem 0;">
+
+            <div class="form-group">
+                <button class="btn btn-secondary" onclick="loadFiles()">List Bucket Files</button>
+            </div>
+
+            <div>
+                <div class="result-heading">Response:</div>
+                <pre id="fileResult">Waiting for data...</pre>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // API Gateway URL
+        const GATEWAY_URL = 'http://localhost:8080';
+
+        // Utility strictly formats JSON display in <pre>
+        function renderResult(elementId, data) {
+            document.getElementById(elementId).innerText = JSON.stringify(data, null, 2);
+        }
+        function renderError(elementId, error) {
+            document.getElementById(elementId).innerText = 'Error: ' + error;
+        }
+
+        // ================= STOCK API =================
+        async function loadStockItems() {
+            try {
+                const res = await fetch(`${GATEWAY_URL}/api/stock`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderResult('stockResult', data);
+            } catch (error) {
+                renderError('stockResult', error.message);
+            }
+        }
+
+        async function addStockItem() {
+            const payload = {
+                name: document.getElementById('stockName').value,
+                description: document.getElementById('stockDesc').value,
+                quantity: parseInt(document.getElementById('stockQty').value) || 0,
+                price: parseFloat(document.getElementById('stockPrice').value) || 0.0
+            };
+
+            try {
+                const res = await fetch(`${GATEWAY_URL}/api/stock`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderResult('stockResult', { message: "Item Added Successfully!", savedItem: data });
+                
+                // Clear inputs
+                document.getElementById('stockName').value = '';
+                document.getElementById('stockDesc').value = '';
+                document.getElementById('stockQty').value = '';
+                document.getElementById('stockPrice').value = '';
+                
+                // Refresh list automatically after 1s
+                setTimeout(loadStockItems, 1000);
+            } catch (error) {
+                renderError('stockResult', error.message);
+            }
+        }
+
+        // ================= SUPPLIER API =================
+        async function loadSuppliers() {
+            try {
+                const res = await fetch(`${GATEWAY_URL}/api/suppliers`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderResult('supplierResult', data);
+            } catch (error) {
+                renderError('supplierResult', error.message);
+            }
+        }
+
+        async function addSupplier() {
+            const payload = {
+                name: document.getElementById('supName').value,
+                contactEmail: document.getElementById('supEmail').value,
+                phone: document.getElementById('supPhone').value,
+                address: document.getElementById('supAddress').value
+            };
+
+            try {
+                const res = await fetch(`${GATEWAY_URL}/api/suppliers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderResult('supplierResult', { message: "Supplier Added Successfully!", savedSupplier: data });
+                
+                // Clear inputs
+                document.getElementById('supName').value = '';
+                document.getElementById('supEmail').value = '';
+                document.getElementById('supPhone').value = '';
+                document.getElementById('supAddress').value = '';
+
+                // Refresh list automatically after 1s
+                setTimeout(loadSuppliers, 1000);
+            } catch (error) {
+                renderError('supplierResult', error.message);
+            }
+        }
+
+        // ================= FILE API =================
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                renderError('fileResult', "Please select a file first.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                document.getElementById('fileResult').innerText = "Uploading...";
+                const res = await fetch(`${GATEWAY_URL}/api/files/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderResult('fileResult', data);
+                
+                fileInput.value = ''; // clear input
+            } catch (error) {
+                renderError('fileResult', error.message);
+            }
+        }
+
+        async function loadFiles() {
+            try {
+                document.getElementById('fileResult').innerText = "Loading files list...";
+                const res = await fetch(`${GATEWAY_URL}/api/files/list`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderResult('fileResult', data);
+            } catch (error) {
+                renderError('fileResult', error.message);
+            }
+        }
+
+        // Auto-load data on startup
+        window.onload = () => {
+            loadStockItems();
+            loadSuppliers();
+        };
+    </script>
+</body>
+</html>
